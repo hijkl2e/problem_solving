@@ -27,7 +27,7 @@ int main() {
 		stack<ii> st;
 		for (int i = 0; i < N; ++i) {
 			int miny = i;
-			while (!st.empty() && st.top().first > A[i][j]) {
+			while (st.size() && st.top().first > A[i][j]) {
 				auto [x, y] = st.top(); st.pop();
 				B[x] = max(B[x], i - y);
 				miny = min(miny, y);
@@ -36,7 +36,7 @@ int main() {
 				st.push({A[i][j], miny});
 			}
 		}
-		while (!st.empty()) {
+		while (st.size()) {
 			auto [x, y] = st.top(); st.pop();
 			B[x] = max(B[x], N - y);
 		}
