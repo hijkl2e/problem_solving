@@ -45,44 +45,21 @@ int main() {
 			dfs(x, scc_num++);
 		}
 	}
-	H.assign(scc_num, {});
+	deque<bool> A(scc_num);
 	for (int u = 1; u <= N; ++u) {
 		for (int v : G[u]) {
-			if (scc[u] == scc[v]) {
-				continue;
-			}
-			H[scc[u]].push_back(scc[v]);
-		}
-	}
-	vector<int> ind(scc_num);
-	for (int u = 0; u < scc_num; ++u) {
-		for (int v : H[u]) {
-			++ind[v];
-		}
-	}
-	int X{};
-	queue<int> q;
-	for (int u = 0; u < scc_num; ++u) {
-		if (ind[u] == 0) {
-			q.push(u);
-			X = u;
-		}
-	}
-	while (q.size()) {
-		if (q.size() > 1) {
-			cout << "0\n";
-			return 0;
-		}
-		int u = q.front(); q.pop();
-		for (int v : H[u]) {
-			if (--ind[v] == 0) {
-				q.push(v);
+			if (scc[u] + 1 == scc[v]) {
+				A[scc[v]] = true;
 			}
 		}
+	}
+	if (accumulate(A.begin(), A.end(), 0) < scc_num - 1) {
+		cout << "0\n";
+		return 0;
 	}
 	vector<int> ans;
 	for (int i = 1; i <= N; ++i) {
-		if (scc[i] == X) {
+		if (scc[i] == 0) {
 			ans.push_back(i);
 		}
 	}

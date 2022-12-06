@@ -3,18 +3,14 @@
 using namespace std;
 
 vector<vector<int>> G, H;
-stack<int> st;
-vector<int> scc;
+deque<bool> vst;
 
-void dfs(int x, int scc_num) {
-	scc[x] = scc_num == -1 ? 0 : scc_num;
-	for (int y : scc_num == -1 ? G[x] : H[x]) {
-		if (scc[y] == -1) {
-			dfs(y, scc_num);
+void dfs(int x, bool rev) {
+	vst[x] = true;
+	for (int y : rev ? H[x] : G[x]) {
+		if (!vst[y]) {
+			dfs(y, rev);
 		}
-	}
-	if (scc_num == -1) {
-		st.push(x);
 	}
 }
 
@@ -31,20 +27,12 @@ int main() {
 		G[u].push_back(v);
 		H[v].push_back(u);
 	}
-	scc.assign(N + 1, -1);
-	for (int i = 1; i <= N; ++i) {
-		if (scc[i] == -1) {
-			dfs(i, -1);
-		}
-	}
-	fill(scc.begin(), scc.end(), -1);
-	int scc_num{};
-	while (st.size()) {
-		int x = st.top(); st.pop();
-		if (scc[x] == -1) {
-			dfs(x, scc_num++);
-		}
-	}
-	cout << (scc_num == 1 ? "Yes" : "No") << "\n";
+	vst.resize(N + 1);
+	dfs(1, false);
+	bool yes = accumulate(vst.begin(), vst.end(), 0) == N;
+	fill(vst.begin(), vst.end(), false);
+	dfs(1, true);
+	yes &= accumulate(vst.begin(), vst.end(), 0) == N;
+	cout << (yes ? "Yes" : "No") << "\n";
 	return 0;
 }
