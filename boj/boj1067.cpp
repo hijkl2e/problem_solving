@@ -2,10 +2,8 @@
 
 using namespace std;
 
-using ll = long long;
-using cd = complex<long double>;
+using cd = complex<double>;
 
-const ll MOD = 1e9 + 7;
 const double pi = acos(-1);
 
 void fft(vector<cd> &a, int d = 1) {
@@ -42,49 +40,29 @@ void fft(vector<cd> &a, int d = 1) {
 	}
 }
 
-vector<vector<int>> G;
-vector<cd> f(1 << 20);
-
-void dfs(int x, int p, int d) {
-	for (int y : G[x]) {
-		if (y == p) {
-			continue;
-		}
-		dfs(y, x, d + 1);
-	}
-	if (G[x].size() == 1 && d) {
-		f[d] += 1;
-	}
-}
-
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-	int N{}, R{};
-	cin >> N >> R;
-	G.resize(N + 1);
-	for (int i = 0; i < N - 1; ++i) {
-		int u{}, v{};
-		cin >> u >> v;
-		G[u].push_back(v);
-		G[v].push_back(u);
+	int N{};
+	cin >> N;
+	vector<cd> f(1 << 18);
+	vector<cd> g(1 << 18);
+	for (int i = 0; i < N; ++i) {
+		cin >> f[i];
+		f[N + i] = f[i];
 	}
-	dfs(R, -1, 0);
-	fft(f);
+	for (int i = N - 1; i >= 0; --i) {
+		cin >> g[i];
+	}
+	fft(f), fft(g);
 	for (int i = 0; i < f.size(); ++i) {
-		f[i] *= f[i];
+		f[i] *= g[i];
 	}
 	fft(f, -1);
-	vector<ll> psum(N + 1);
-	for (int i = 2; i <= N; ++i) {
-		psum[i] = psum[i - 1] + llround(f[i].real());
+	int ans{};
+	for (int i = 0; i < f.size(); ++i) {
+		ans = max<int>(ans, lround(f[i].real()));
 	}
-	int Q{};
-	cin >> Q;
-	while (Q--) {
-		int a{}, b{};
-		cin >> a >> b;
-		cout << (psum[b] - psum[a - 1]) % MOD << "\n";
-	}
+	cout << ans << "\n";
 	return 0;
 }
