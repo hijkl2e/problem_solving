@@ -32,46 +32,37 @@ int main() {
 		cout << "-1\n";
 		return 0;
 	}
-	vector<deque<bool>> vst(N, deque<bool>(M));
-	vector<deque<ii>> dq(2);
 	for (int i = 0; i < N; ++i) {
 		for (int j = 0; j < M; ++j) {
 			for (int k = 0; k < 4; ++k) {
 				int nx = i + dx[k];
 				int ny = j + dy[k];
 				if (0 <= nx && nx < N && 0 <= ny && ny < M && A[i][j] == A[nx][ny]) {
-					vst[i][j] = vst[nx][ny] = true;
-					dq[A[i][j]].push_back({i, j});
-					dq[A[nx][ny]].push_back({nx, ny});
+					cout << "1\n";
+					cout << i + 1 << " " << j + 1 << " " << nx + 1 << " " << ny + 1 << "\n";
+					A[i][j] = A[nx][ny] = -1;
 					i = N, j = M;
 					break;
 				}
 			}
 		}
 	}
-	if (dq[0].empty() && dq[1].empty()) {
+	vector<vector<ii>> B(2);
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < M; ++j) {
+			if (A[i][j] != -1) {
+				B[A[i][j]].push_back({i + 1, j + 1});
+			}
+		}
+	}
+	if (B[0].size() + B[1].size() == N * M) {
 		cout << "-1\n";
 		return 0;
 	}
-	cout << "1\n";
-	while (dq[0].size() || dq[1].size()) {
-		for (int i = 0; i < 2; ++i) {
-			if (dq[i].size() < 2) {
-				continue;
-			}
-			cout << dq[i][0].first + 1 << " " << dq[i][0].second + 1 << " ";
-			cout << dq[i][1].first + 1 << " " << dq[i][1].second + 1 << "\n";
-			for (int j = 0; j < 2; ++j) {
-				auto [x, y] = dq[i].front(); dq[i].pop_front();
-				for (int k = 0; k < 4; ++k) {
-					int nx = x + dx[k];
-					int ny = y + dy[k];
-					if (0 <= nx && nx < N && 0 <= ny && ny < M && !vst[nx][ny]) {
-						vst[nx][ny] = true;
-						dq[A[nx][ny]].push_back({nx, ny});
-					}
-				}
-			}
+	for (int i = 0; i < 2; ++i) {
+		for (int j = 0; j < B[i].size(); j += 2) {
+			cout << B[i][j].first << " " << B[i][j].second << " ";
+			cout << B[i][j + 1].first << " " << B[i][j + 1].second << "\n";
 		}
 	}
 	return 0;
