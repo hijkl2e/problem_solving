@@ -41,20 +41,18 @@ int main() {
 			if (r < b) {
 				break;
 			}
-			int len = b - a + 1;
-			auto it = i2a.lower_bound(a);
-			if (it != i2a.end() && it->second <= len) {
-				++j;
+			++j;
+			if (i2a.size() && (--i2a.end())->first > a) {
 				continue;
 			}
-			it = i2a.insert_or_assign(a, len).first;
+			int len = b - a + 1;
+			auto it = i2a.insert({a, len}).first;
 			while (it != i2a.begin()) {
 				if ((--it)->second < len) {
 					break;
 				}
 				it = i2a.erase(it);
 			}
-			++j;
 		}
 		auto it = i2a.lower_bound(l);
 		E[idx] = it == i2a.end() ? -1 : it->second;
