@@ -23,13 +23,12 @@ int main() {
 		cin >> A[i].first >> A[i].second;
 	}
 	set<int> S;
-	auto it = S.begin();
 	for (int i = 1; i <= N; ++i) {
-		it = S.insert(it, i);
+		S.insert(S.end(), i);
 	}
 	vector<int> B(N + 1);
 	for (auto &[u, v] : A) {
-		it = S.lower_bound(u);
+		auto it = S.lower_bound(u);
 		while (it != S.end() && *it <= v) {
 			B[*it] = *it - u + 1;
 			it = S.erase(it);
