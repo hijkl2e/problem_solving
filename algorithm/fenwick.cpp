@@ -89,3 +89,39 @@ private:
 	RUPQ<T> rupq;
 	FT<T> purq;
 };
+
+template <typename T = ll>
+class FT2D {
+public:
+	FT2D(int n, int m) : ft(n + 1, vector<T>(m + 1)) { }
+	T rsq(int x1, int y1, int x2, int y2) {
+		return rsq(x2, y2) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1) + rsq(x1 - 1, y1 - 1);
+	}
+	T rsq(int x, int y) {
+		T res{};
+		while (x) {
+			int z = y;
+			while (z) {
+				res += ft[x][z];
+				z -= LSOne(z);
+			}
+			x -= LSOne(x);
+		}
+		return res;
+	}
+	void update(int x, int y, T v) {
+		while (x < ft.size()) {
+			int z = y;
+			while (z < ft[x].size()) {
+				ft[x][z] += v;
+				z += LSOne(z);
+			}
+			x += LSOne(x);
+		}
+	}
+private:
+	T LSOne(T x) {
+		return x & -x;
+	}
+	vector<vector<T>> ft;
+};
