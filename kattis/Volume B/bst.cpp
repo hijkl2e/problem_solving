@@ -10,20 +10,14 @@ int main() {
 	int N{};
 	cin >> N;
 	map<int, int> i2d;
+	i2d[0] = i2d[N + 1] = -1;
 	ll ans{};
 	while (N--) {
 		int x{};
 		cin >> x;
-		int d{};
 		auto it = i2d.upper_bound(x);
-		if (it != i2d.end()) {
-			d = it->second + 1;
-		}
-		if (it != i2d.begin()) {
-			--it;
-			d = max(d, it->second + 1);
-		}
-		i2d[x] = d;
+		int d = max(it->second, prev(it)->second) + 1;
+		i2d.insert(it, {x, d});
 		ans += d;
 		cout << ans << "\n";
 	}
