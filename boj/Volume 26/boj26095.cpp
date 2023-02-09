@@ -34,7 +34,7 @@ int main() {
 		cin >> x;
 		++A[x];
 	}
-	A[0] = A[1] = 1e9;
+	A[0] = A[1] = 1;
 	int ans{};
 	for (int i = 0; solve(i); ++i) {
 		ans = i + 1;
