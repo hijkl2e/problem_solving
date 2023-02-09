@@ -12,13 +12,11 @@ int main() {
 	for (int i = 0; i < N; ++i) {
 		cin >> A[i] >> B[i];
 	}
-	vector<deque<bool>> dp(81, deque<bool>(16001));
+	vector<bitset<16001>> dp(81);
 	dp[0][0] = true;
 	for (int i = 0; i < N; ++i) {
 		for (int j = min(i + 1, K); j > 0; --j) {
-			for (int k = x * j; k >= A[i]; --k) {
-				dp[j][k] |= dp[j - 1][k - A[i]];
-			}
+			dp[j] |= dp[j - 1] << A[i];
 		}
 	}
 	int ans{};
