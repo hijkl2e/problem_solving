@@ -8,7 +8,7 @@ struct Trie {
 	Trie() : next(26) {
 		++trie_cnt;
 	}
-	void insert(string s, int i) {
+	void insert(string &s, int i) {
 		if (i == s.size()) {
 			return;
 		}
