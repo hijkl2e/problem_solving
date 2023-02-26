@@ -75,10 +75,10 @@ int main() {
 	cin.tie(nullptr);
 	int M{}, N{};
 	cin >> M >> N;
-	vector<string> name(M + 1);
+	vector<string> A(M + 1);
 	vector<vector<int>> G(M + 1);
 	for (int i = 1; i <= M; ++i) {
-		cin >> name[i];
+		cin >> A[i];
 		int d{};
 		cin >> d;
 		G[i].resize(d);
@@ -112,7 +112,7 @@ int main() {
 		cout << k << "\n";
 		for (int i = 1; i <= N; ++i) {
 			cout << "Day " << i << ": ";
-			cout << name[ans[i][0]] << " " << name[ans[i][1]] << "\n";
+			cout << A[ans[i][0]] << " " << A[ans[i][1]] << "\n";
 		}
 		break;
 	}
