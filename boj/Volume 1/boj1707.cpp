@@ -8,7 +8,7 @@ vector<int> C;
 bool dfs(int x, int c) {
 	C[x] = c;
 	for (int y : G[x]) {
-		if ((C[y] == -1 && !dfs(y, c ^ 1)) || C[x] == C[y]) {
+		if (C[y] == -1 ? !dfs(y, c ^ 1) : (C[x] == C[y])) {
 			return false;
 		}
 	}
