@@ -13,12 +13,9 @@ ll solve(ll x) {
 		ll y = x & -x;
 		x -= y;
 		int cnt = __builtin_popcountll((N & ~(y - 1)) ^ x);
-		int i{};
-		while (y > 1) {
-			++i, y /= 2;
-		}
-		if (0 <= K - cnt && K - cnt <= i) {
-			ret += dp[i][K - cnt];
+		int n = 63 - __builtin_clzll(y);
+		if (0 <= K - cnt && K - cnt <= n) {
+			ret += dp[n][K - cnt];
 		}
 	}
 	return ret;
