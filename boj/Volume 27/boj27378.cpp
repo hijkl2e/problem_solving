@@ -13,7 +13,7 @@ ll solve(ll x) {
 		ll y = x & -x;
 		x -= y;
 		int cnt = __builtin_popcountll((N & ~(y - 1)) ^ x);
-		int n = 63 - __builtin_clzll(y);
+		int n = __builtin_ctzll(y);
 		if (0 <= K - cnt && K - cnt <= n) {
 			ret += dp[n][K - cnt];
 		}
