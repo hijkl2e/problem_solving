@@ -3,65 +3,71 @@
 using namespace std;
 
 using ll = long long;
-using li = pair<ll, int>;
+using ii = pair<ll, ll>;
 
 const ll INF = 4e18;
 
-int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-	int N{}, M{};
-	cin >> N >> M;
-	vector<vector<li>> G(N);
-	while (M--) {
-		int u{}, v{}, w{};
-		cin >> u >> v >> w;
-		G[u].push_back({w, v});
-	}
-	int s{}, t{};
-	cin >> s >> t;
-	vector<ll> D(N, INF);
-	priority_queue<li, vector<li>, greater<li>> pq;
+vector<ll> dijkstra(vector<vector<ii>> &G, int s) {
+	vector<ll> D(G.size(), INF);
+	priority_queue<ii, vector<ii>, greater<ii>> pq;
 	pq.push({D[s] = 0, s});
 	while (pq.size()) {
 		auto [d, u] = pq.top(); pq.pop();
 		if (D[u] < d) {
 			continue;
 		}
-		for (auto &[w, v] : G[u]) {
-			if (D[v] > d + w) {
-				pq.push({D[v] = d + w, v});
+		for (auto &[v, w] : G[u]) {
+			if (D[v] > D[u] + w) {
+				pq.push({D[v] = D[u] + w, v});
 			}
 		}
 	}
-	vector<vector<int>> H(N);
+	return D;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int N{}, M{};
+	cin >> N >> M;
+	vector<vector<ii>> G(N);
+	vector<vector<ii>> H(N);
+	while (M--) {
+		int u{}, v{}, w{};
+		cin >> u >> v >> w;
+		G[u].push_back({v, w});
+		H[v].push_back({u, w});
+	}
+	int s{}, t{};
+	cin >> s >> t;
+	vector<ll> d1 = dijkstra(G, s);
+	vector<ll> d2 = dijkstra(H, t);
+	H.assign(N, {});
 	for (int u = 0; u < N; ++u) {
-		for (auto &[w, v] : G[u]) {
-			if (D[v] == D[u] + w) {
-				H[v].push_back(u);
+		for (auto &[v, w] : G[u]) {
+			if (d1[u] + w + d2[v] == d1[t]) {
+				H[u].push_back({v, w});
 			}
 		}
 	}
-	deque<bool> vst(N);
-	queue<int> q;
-	vst[t] = true;
-	q.push(t);
-	vector<int> ans;
-	while (q.size()) {
-		int u = q.front(); q.pop();
-		if (q.empty()) {
-			ans.push_back(u);
+	vector<ll> D(N, INF);
+	priority_queue<ii, vector<ii>, greater<ii>> pq;
+	pq.push({D[s] = 0, s});
+	vector<int> A;
+	while (pq.size()) {
+		auto [d, u] = pq.top(); pq.pop();
+		if (pq.empty()) {
+			A.push_back(u);
 		}
-		for (int v : H[u]) {
-			if (!vst[v]) {
-				vst[v] = true;
-				q.push(v);
+		for (auto &[v, w] : H[u]) {
+			if (D[v] == INF) {
+				pq.push({D[v] = D[u] + w, v});
 			}
 		}
 	}
-	sort(ans.begin(), ans.end());
-	for (int i = 0; i < ans.size(); ++i) {
-		cout << ans[i] << (i == ans.size() - 1 ? "\n" : " ");
+	sort(A.begin(), A.end());
+	for (int i = 0; i < A.size(); ++i) {
+		cout << A[i] << (i == A.size() - 1 ? "\n" : " ");
 	}
 	return 0;
 }
