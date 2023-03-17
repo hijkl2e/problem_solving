@@ -31,7 +31,7 @@ public class boj27299 {
 				if (C.compareTo(BigInteger.valueOf(7)) == -1) {
 					B = pow(B % MOD, C.intValue());
 				} else {
-					B = pow(B % MOD, C.remainder(BigInteger.valueOf(MOD)).intValue() + MOD);
+					B = pow(B % MOD, C.mod(BigInteger.valueOf(MOD)).intValue() + MOD);
 				}
 				ans = pow(A % MOD, B + MOD);
 			}

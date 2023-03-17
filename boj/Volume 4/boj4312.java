@@ -19,7 +19,7 @@ public class boj4312 {
 			}
 			out.append("{ ");
 			for (int i = 0; N.compareTo(BigInteger.ZERO) == 1; ++i) {
-				if (N.remainder(BigInteger.TWO).equals(BigInteger.ONE)) {
+				if (N.mod(BigInteger.TWO).equals(BigInteger.ONE)) {
 					out.append(THREE.pow(i)).append(", ");
 				}
 				N = N.divide(BigInteger.TWO);
