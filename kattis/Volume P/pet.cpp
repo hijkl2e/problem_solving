@@ -13,7 +13,7 @@ int main() {
 			A[i] += x;
 		}
 	}
-	auto it = max_element(A.begin(), A.end());
-	cout << (it - A.begin() + 1) << " " << *it << "\n";
+	int x = max_element(A.begin(), A.end()) - A.begin();
+	cout << x + 1 << " " << A[x] << "\n";
 	return 0;
 }
