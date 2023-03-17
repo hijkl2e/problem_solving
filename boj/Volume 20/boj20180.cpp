@@ -5,13 +5,15 @@ using namespace std;
 using ll = long long;
 using ii = pair<ll, ll>;
 
+const ll INF = 4e18;
+
 vector<ii> B, C;
 
 ll solve(int L, int R, int optL, int optR) {
 	if (L > R) {
 		return 0;
 	}
-	ll ret{};
+	ll ret = -INF;
 	int j = (L + R) / 2;
 	int opt{};
 	for (int k = optL; k <= optR; ++k) {
