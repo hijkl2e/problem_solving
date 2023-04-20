@@ -38,26 +38,23 @@ int main() {
 	for (int i = 0; i < 4; ++i) {
 		B[i] = ccw(A[i & 2], A[(i & 2) | 1], A[i ^ 2]);
 	}
-	bool yes = B[0] * B[1] < 1 && B[2] * B[3] < 1;
 	if (count(B.begin(), B.end(), 0) == 4) {
 		for (int i = 0; i < 4; i += 2) {
 			if (A[i + 1] <= A[i]) {
 				swap(A[i], A[i + 1]);
 			}
 		}
-		yes = A[0] <= A[3] && A[2] <= A[1];
-	}
-	cout << yes << "\n";
-	if (!yes) {
-		return 0;
-	}
-	if (count(B.begin(), B.end(), 0) == 4) {
-		point *p = A[0] == A[3] ? &A[0] : A[2] == A[1] ? &A[2] : nullptr;
-		if (p) {
-			cout << p->x << " " << p->y << "\n";
+		int z = A[0] <= A[3] && A[2] <= A[1] ? A[0] == A[3] ? 0 : A[2] == A[1] ? 1 : 2 : -1;
+		cout << (z != -1) << "\n";
+		if (z == 0 || z == 1) {
+			cout << A[z].x << " " << A[z].y << "\n";
 		}
 		return 0;
+	} else if (B[0] * B[1] == 1 || B[2] * B[3] == 1) {
+		cout << "0\n";
+		return 0;
 	}
+	cout << "1\n";
 	ll a = abs(_ccw(A[0], A[1], A[2]));
 	ll b = abs(_ccw(A[0], A[1], A[3]));
 	double c = a * 1.0 / (a + b);
