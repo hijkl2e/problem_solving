@@ -8,12 +8,13 @@ const ll INF = 4e18;
 
 class MF {
 public:
-	MF(int V) : G(V), cap(V, vector<ll>(V)), flow(V, vector<ll>(V)), d(V), last(V) { }
+	using edge = tuple<int, ll, ll>;
+	MF(int V) : G(V), d(V), last(V) { }
 	void add_edge(int u, int v, ll c, bool d = true) {
-		G[u].push_back(v);
-		G[v].push_back(u);
-		cap[u][v] = c;
-		cap[v][u] = d ? 0 : c;
+		G[u].push_back(E.size());
+		E.push_back({v, c, 0});
+		G[v].push_back(E.size());
+		E.push_back({u, d ? 0 : c, 0});
 	}
 	ll dinic(int s, int t) {
 		ll mf{};
@@ -25,7 +26,8 @@ public:
 		}
 		return mf;
 	}
-	vector<vector<ll>> flow;
+	vector<edge> E;
+	vector<vector<int>> G;
 private:
 	bool bfs(int s, int t) {
 		fill(d.begin(), d.end(), -1);
@@ -34,8 +36,9 @@ private:
 		q.push(s);
 		while (q.size()) {
 			int u = q.front(); q.pop();
-			for (int v : G[u]) {
-				if (d[v] == -1 && flow[u][v] < cap[u][v]) {
+			for (int idx : G[u]) {
+				auto &[v, cap, flow] = E[idx];
+				if (d[v] == -1 && flow < cap) {
 					d[v] = d[u] + 1;
 					q.push(v);
 					if (v == t) {
@@ -51,19 +54,18 @@ private:
 			return f;
 		}
 		for (int &i = last[u]; i < G[u].size(); ++i) {
-			int v = G[u][i];
-			if (d[v] == d[u] + 1 && flow[u][v] < cap[u][v]) {
-				if (ll pushed = dfs(v, t, min(f, cap[u][v] - flow[u][v]))) {
-					flow[u][v] += pushed;
-					flow[v][u] -= pushed;
+			auto &[v, cap, flow] = E[G[u][i]];
+			if (d[v] == d[u] + 1 && flow < cap) {
+				if (ll pushed = dfs(v, t, min(f, cap - flow))) {
+					flow += pushed;
+					auto &rflow = get<2>(E[G[u][i] ^ 1]);
+					rflow -= pushed;
 					return pushed;
 				}
 			}
 		}
 		return 0;
 	}
-	vector<vector<int>> G;
-	vector<vector<ll>> cap;
 	vector<int> d, last;
 };
 
@@ -97,10 +99,11 @@ int main() {
 		}
 		if (mf.dinic(0, M + N + 1) == 2 * N) {
 			B[0].push_back(k);
-			for (int i = 1; i <= M; ++i) {
-				for (int j = 1; j <= N; ++j) {
-					if (mf.flow[i][M + j]) {
-						B[j].push_back(i);
+			for (int u = 1; u <= M; ++u) {
+				for (int idx : mf.G[u]) {
+					auto &[v, cap, flow] = mf.E[idx];
+					if (flow == 1) {
+						B[v - M].push_back(u);
 					}
 				}
 			}
