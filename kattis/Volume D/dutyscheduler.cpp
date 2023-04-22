@@ -8,13 +8,12 @@ const ll INF = 4e18;
 
 class MF {
 public:
-	using edge = tuple<int, ll, ll>;
-	MF(int V) : G(V), d(V), last(V) { }
+	MF(int V) : G(V), cap(V, vector<ll>(V)), flow(V, vector<ll>(V)), d(V), last(V) { }
 	void add_edge(int u, int v, ll c, bool d = true) {
-		G[u].push_back(E.size());
-		E.push_back({v, c, 0});
-		G[v].push_back(E.size());
-		E.push_back({u, d ? 0 : c, 0});
+		G[u].push_back(v);
+		G[v].push_back(u);
+		cap[u][v] = c;
+		cap[v][u] = d ? 0 : c;
 	}
 	ll dinic(int s, int t) {
 		ll mf{};
@@ -26,8 +25,7 @@ public:
 		}
 		return mf;
 	}
-	vector<edge> E;
-	vector<vector<int>> G;
+	vector<vector<ll>> flow;
 private:
 	bool bfs(int s, int t) {
 		fill(d.begin(), d.end(), -1);
@@ -36,9 +34,8 @@ private:
 		q.push(s);
 		while (q.size()) {
 			int u = q.front(); q.pop();
-			for (int idx : G[u]) {
-				auto &[v, cap, flow] = E[idx];
-				if (d[v] == -1 && flow < cap) {
+			for (int v : G[u]) {
+				if (d[v] == -1 && flow[u][v] < cap[u][v]) {
 					d[v] = d[u] + 1;
 					q.push(v);
 					if (v == t) {
@@ -54,19 +51,19 @@ private:
 			return f;
 		}
 		for (int &i = last[u]; i < G[u].size(); ++i) {
-			auto &[v, cap, flow] = E[G[u][i]];
-			if (d[v] != d[u] + 1 || flow == cap) {
-				continue;
-			}
-			if (ll pushed = dfs(v, t, min(f, cap - flow))) {
-				flow += pushed;
-				auto &rflow = get<2>(E[G[u][i] ^ 1]);
-				rflow -= pushed;
-				return pushed;
+			int v = G[u][i];
+			if (d[v] == d[u] + 1 && flow[u][v] < cap[u][v]) {
+				if (ll pushed = dfs(v, t, min(f, cap[u][v] - flow[u][v]))) {
+					flow[u][v] += pushed;
+					flow[v][u] -= pushed;
+					return pushed;
+				}
 			}
 		}
 		return 0;
 	}
+	vector<vector<int>> G;
+	vector<vector<ll>> cap;
 	vector<int> d, last;
 };
 
@@ -86,7 +83,7 @@ int main() {
 			cin >> G[i][j];
 		}
 	}
-	vector<vector<int>> ans(N + 1);
+	vector<vector<int>> B(N + 1);
 	for (int k = 1;; ++k) {
 		MF mf(M + N + 2);
 		for (int i = 1; i <= M; ++i) {
@@ -98,23 +95,22 @@ int main() {
 		for (int i = 1; i <= N; ++i) {
 			mf.add_edge(M + i, M + N + 1, 2);
 		}
-		if (mf.dinic(0, M + N + 1) < 2 * N) {
-			continue;
-		}
-		for (int i = 1; i <= M; ++i) {
-			for (int x : mf.G[i]) {
-				auto &[v, cap, flow] = mf.E[x];
-				if (flow == 1) {
-					ans[v - M].push_back(i);
+		if (mf.dinic(0, M + N + 1) == 2 * N) {
+			B[0].push_back(k);
+			for (int i = 1; i <= M; ++i) {
+				for (int j = 1; j <= N; ++j) {
+					if (mf.flow[i][M + j]) {
+						B[j].push_back(i);
+					}
 				}
 			}
+			break;
 		}
-		cout << k << "\n";
-		for (int i = 1; i <= N; ++i) {
-			cout << "Day " << i << ": ";
-			cout << A[ans[i][0]] << " " << A[ans[i][1]] << "\n";
-		}
-		break;
+	}
+	cout << B[0][0] << "\n";
+	for (int i = 1; i <= N; ++i) {
+		cout << "Day " << i << ": ";
+		cout << A[B[i][0]] << " " << A[B[i][1]] << "\n";
 	}
 	return 0;
 }

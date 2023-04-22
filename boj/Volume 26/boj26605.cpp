@@ -10,13 +10,12 @@ const ll INF = 4e18;
 
 class MF {
 public:
-	using edge = tuple<int, ll, ll>;
-	MF(int V) : G(V), d(V), last(V) { }
+	MF(int V) : G(V), cap(V, vector<ll>(V)), flow(V, vector<ll>(V)), d(V), last(V) { }
 	void add_edge(int u, int v, ll c, bool d = true) {
-		G[u].push_back(E.size());
-		E.push_back({v, c, 0});
-		G[v].push_back(E.size());
-		E.push_back({u, d ? 0 : c, 0});
+		G[u].push_back(v);
+		G[v].push_back(u);
+		cap[u][v] = c;
+		cap[v][u] = d ? 0 : c;
 	}
 	ll dinic(int s, int t) {
 		ll mf{};
@@ -28,9 +27,8 @@ public:
 		}
 		return mf;
 	}
-	vector<edge> E;
 	vector<vector<int>> G;
-	vector<int> d, last;
+	vector<int> d;
 private:
 	bool bfs(int s, int t) {
 		fill(d.begin(), d.end(), -1);
@@ -39,9 +37,8 @@ private:
 		q.push(s);
 		while (q.size()) {
 			int u = q.front(); q.pop();
-			for (int idx : G[u]) {
-				auto &[v, cap, flow] = E[idx];
-				if (d[v] == -1 && flow < cap) {
+			for (int v : G[u]) {
+				if (d[v] == -1 && flow[u][v] < cap[u][v]) {
 					d[v] = d[u] + 1;
 					q.push(v);
 					if (v == t) {
@@ -57,19 +54,19 @@ private:
 			return f;
 		}
 		for (int &i = last[u]; i < G[u].size(); ++i) {
-			auto &[v, cap, flow] = E[G[u][i]];
-			if (d[v] != d[u] + 1 || flow == cap) {
-				continue;
-			}
-			if (ll pushed = dfs(v, t, min(f, cap - flow))) {
-				flow += pushed;
-				auto &rflow = get<2>(E[G[u][i] ^ 1]);
-				rflow -= pushed;
-				return pushed;
+			int v = G[u][i];
+			if (d[v] == d[u] + 1 && flow[u][v] < cap[u][v]) {
+				if (ll pushed = dfs(v, t, min(f, cap[u][v] - flow[u][v]))) {
+					flow[u][v] += pushed;
+					flow[v][u] -= pushed;
+					return pushed;
+				}
 			}
 		}
 		return 0;
 	}
+	vector<vector<ll>> cap, flow;
+	vector<int> last;
 };
 
 int main() {
@@ -80,8 +77,13 @@ int main() {
 	int A{}, B{}, K{};
 	cin >> A >> B >> K;
 	vector<iii> E(M);
-	for (auto &[u, v, c] : E) {
+	vector<int> F;
+	for (int i = 0; i < M; ++i) {
+		auto &[u, v, c] = E[i];
 		cin >> u >> v >> c;
+		if (u == K || v == K) {
+			F.push_back(i);
+		}
 	}
 	MF mf(N + 1);
 	for (auto &[u, v, c] : E) {
@@ -89,44 +91,39 @@ int main() {
 	}
 	int ans = mf.dinic(A, B);
 	vector<ii> C;
-	for (int i = 0; i < E.size(); ++i) {
-		auto &[ui, vi, ci] = E[i];
-		if (ui != K && vi != K) {
-			continue;
-		}
+	for (int x : F) {
+		auto &[ux, vx, cx] = E[x];
 		mf = MF(N + 1);
-		for (int j = 0; j < E.size(); ++j) {
-			if (i == j) {
+		for (int i = 0; i < M; ++i) {
+			if (i == x) {
 				continue;
 			}
-			auto &[u, v, c] = E[j];
+			auto &[u, v, c] = E[i];
 			mf.add_edge(u, v, c, false);
 		}
-		if (mf.dinic(A, B) > ans - ci) {
-			continue;
-		}
-		C.push_back({ui, vi});
-		for (int u = 1; u <= N; ++u) {
-			if (mf.d[u] == -1) {
-				continue;
-			}
-			for (int x : mf.G[u]) {
-				auto &[v, cap, flow] = mf.E[x];
-				if (mf.d[v] == -1) {
-					C.push_back({u, v});
+		if (mf.dinic(A, B) == ans - cx) {
+			C.push_back({ux, vx});
+			for (int u = 1; u <= N; ++u) {
+				if (mf.d[u] == -1) {
+					continue;
+				}
+				for (int v : mf.G[u]) {
+					if (mf.d[v] == -1) {
+						C.push_back({u, v});
+					}
 				}
 			}
+			break;
 		}
-		break;
 	}
 	cout << ans << "\n";
-	if (C.empty()) {
-		cout << "-1\n";
-	} else {
+	if (C.size()) {
 		cout << C.size() << "\n";
 		for (auto &[u, v] : C) {
 			cout << u << " " << v << "\n";
 		}
+	} else {
+		cout << "-1\n";
 	}
 	return 0;
 }
