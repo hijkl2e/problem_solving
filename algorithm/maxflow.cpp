@@ -8,13 +8,12 @@ const ll INF = 4e18;
 
 class MF {
 public:
-	using edge = tuple<int, ll, ll>;
-	MF(int V) : G(V), d(V), last(V) { }
+	MF(int V) : G(V), cap(V, vector<ll>(V)), flow(V, vector<ll>(V)), d(V), last(V) { }
 	void add_edge(int u, int v, ll c, bool d = true) {
-		G[u].push_back(E.size());
-		E.push_back({v, c, 0});
-		G[v].push_back(E.size());
-		E.push_back({u, d ? 0 : c, 0});
+		G[u].push_back(v);
+		G[v].push_back(u);
+		cap[u][v] = c;
+		cap[v][u] = d ? 0 : c;
 	}
 	ll dinic(int s, int t) {
 		ll mf{};
@@ -34,9 +33,8 @@ private:
 		q.push(s);
 		while (q.size()) {
 			int u = q.front(); q.pop();
-			for (int idx : G[u]) {
-				auto &[v, cap, flow] = E[idx];
-				if (d[v] == -1 && flow < cap) {
+			for (int v : G[u]) {
+				if (d[v] == -1 && flow[u][v] < cap[u][v]) {
 					d[v] = d[u] + 1;
 					q.push(v);
 					if (v == t) {
@@ -52,20 +50,18 @@ private:
 			return f;
 		}
 		for (int &i = last[u]; i < G[u].size(); ++i) {
-			auto &[v, cap, flow] = E[G[u][i]];
-			if (d[v] != d[u] + 1 || flow == cap) {
-				continue;
-			}
-			if (ll pushed = dfs(v, t, min(f, cap - flow))) {
-				flow += pushed;
-				auto &rflow = get<2>(E[G[u][i] ^ 1]);
-				rflow -= pushed;
-				return pushed;
+			int v = G[u][i];
+			if (d[v] == d[u] + 1 && flow[u][v] < cap[u][v]) {
+				if (ll pushed = dfs(v, t, min(f, cap[u][v] - flow[u][v]))) {
+					flow[u][v] += pushed;
+					flow[v][u] -= pushed;
+					return pushed;
+				}
 			}
 		}
 		return 0;
 	}
-	vector<edge> E;
 	vector<vector<int>> G;
+	vector<vector<ll>> cap, flow;
 	vector<int> d, last;
 };
