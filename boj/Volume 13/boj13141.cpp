@@ -33,9 +33,6 @@ int main() {
 	for (int i = 1; i <= N; ++i) {
 		int maxv{};
 		for (auto &[u, v, w] : E) {
-			if (D[i][u] > D[i][v]) {
-				swap(u, v);
-			}
 			maxv = max(maxv, (D[i][u] + D[i][v] + w) / 2);
 		}
 		ans = min(ans, maxv);
