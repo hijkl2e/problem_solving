@@ -18,9 +18,8 @@ int main() {
 		for (int i = 0; i < M; ++i) {
 			cin >> B[i];
 		}
-		sort(A.begin(), A.end());
-		sort(B.begin(), B.end());
-		cout << (A[N - 1] >= B[M - 1] ? "Godzilla" : "MechaGodzilla") << "\n";
+		bool flag = *max_element(A.begin(), A.end()) >= *max_element(B.begin(), B.end());
+		cout << (flag ? "Godzilla" : "MechaGodzilla") << "\n";
 	}
 	return 0;
 }
