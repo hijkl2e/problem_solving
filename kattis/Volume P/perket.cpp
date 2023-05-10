@@ -7,21 +7,21 @@ int main() {
 	cin.tie(nullptr);
 	int N{};
 	cin >> N;
-	vector<int> S(N);
+	vector<int> A(N);
 	vector<int> B(N);
 	for (int i = 0; i < N; ++i) {
-		cin >> S[i] >> B[i];
+		cin >> A[i] >> B[i];
 	}
 	int ans = 1e9;
 	for (int i = 1; i < (1 << N); ++i) {
-		int s = 1, b = 0;
+		int x = 1, y{};
 		for (int j = 0; j < N; ++j) {
-			if ((i >> j) & 1) {
-				s *= S[j];
-				b += B[j];
+			if (i & (1 << j)) {
+				x *= A[j];
+				y += B[j];
 			}
 		}
-		ans = min(ans, abs(s - b));
+		ans = min(ans, abs(x - y));
 	}
 	cout << ans << "\n";
 	return 0;
