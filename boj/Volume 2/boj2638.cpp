@@ -4,9 +4,9 @@ using namespace std;
 
 using ii = pair<int, int>;
 
+const int INF = 1e9 + 7;
 const int dx[4]{-1, 1, 0, 0};
 const int dy[4]{0, 0, -1, 1};
-const int INF = 1e9 + 7;
 
 int main() {
 	ios::sync_with_stdio(false);
