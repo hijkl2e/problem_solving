@@ -23,7 +23,7 @@ int main() {
 	cin.tie(nullptr);
 	ll N{}, M{};
 	cin >> N >> M;
-	ll ans = (pow(2LL, N) - 1) % MOD;
+	ll ans = pow(2LL, N) - 1;
 	if (M > 1) {
 		ans = (2 * M * ans + MOD - 1) % MOD;
 	}
