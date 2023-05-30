@@ -7,8 +7,8 @@ using ll = long long;
 ll ans;
 vector<int> A, U;
 
-void solve(int step, int v, int c, int l) {
-	if (step == U.size()) {
+void solve(int n, int v, int c, int l) {
+	if (n == U.size()) {
 		if (l == 0) {
 			return;
 		}
@@ -27,12 +27,12 @@ void solve(int step, int v, int c, int l) {
 		ans += res;
 		return;
 	}
-	A[U[step]] = 0;
-	solve(step + 1, v + 1, c, l);
-	A[U[step]] = 1;
-	solve(step + 1, v, c + 1, l);
-	solve(step + 1, v, c, l + 1);
-	A[U[step]] = -1;
+	A[U[n]] = 0;
+	solve(n + 1, v + 1, c, l);
+	A[U[n]] = 1;
+	solve(n + 1, v, c + 1, l);
+	solve(n + 1, v, c, l + 1);
+	A[U[n]] = -1;
 }
 
 int main() {
