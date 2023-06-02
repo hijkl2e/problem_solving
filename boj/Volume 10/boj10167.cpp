@@ -6,8 +6,6 @@ using ll = long long;
 using iii = tuple<int, int, int>;
 using rec = tuple<ll, ll, ll, ll>;
 
-const ll INF = 4e18;
-
 class Seg {
 public:
 	Seg(int sz) : n(sz), st(2 * sz) { }
