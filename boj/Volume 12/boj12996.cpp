@@ -2,36 +2,36 @@
 
 using namespace std;
 
-const int MOD = 1e9 + 7;
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	int N{};
 	cin >> N;
-	vector<vector<int>> nCr(N + 1, vector<int>(N + 1));
+	vector<int> A(3);
+	for (int i = 0; i < 3; ++i) {
+		cin >> A[i];
+	}
+	if (A[0] + A[1] + A[2] < N) {
+		cout << "0\n";
+		return 0;
+	}
+	vector<vector<ll>> nCr(N + 1, vector<ll>(N + 1));
 	for (int i = 0; i <= N; ++i) {
 		nCr[i][0] = nCr[i][i] = 1;
 		for (int j = 1; j < i; ++j) {
 			nCr[i][j] = (nCr[i - 1][j] + nCr[i - 1][j - 1]) % MOD;
 		}
 	}
-	vector<vector<int>> dp(4, vector<int>(N + 1));
-	dp[0][N] = 1;
-	for (int n = 0; n < 3; ++n) {
-		int x{};
-		cin >> x;
-		for (int i = 0; i <= N; ++i) {
-			for (int j = 0; j <= i && j <= x; ++j) {
-				int k = x - j;
-				if (N - i < k) {
-					continue;
-				}
-				int &val = dp[n + 1][i - j];
-				val = (val + 1LL * nCr[i][j] * nCr[N - i][k] % MOD * dp[n][i]) % MOD;
-			}
-		}
+	ll ans{};
+	for (int i = max({A[1] - A[0], N - A[0] - A[2], 0}); i <= A[1] && i <= N - A[0]; ++i) {
+		ans += nCr[N][A[0]] * nCr[N - A[0]][i] % MOD * nCr[A[0]][A[1] - i] % MOD
+				* nCr[A[0] + i][A[2] - (N - A[0] - i)] % MOD;
 	}
-	cout << dp[3][0] << "\n";
+	ans %= MOD;
+	cout << ans << "\n";
 	return 0;
 }
