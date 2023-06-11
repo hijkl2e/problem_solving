@@ -2,6 +2,8 @@
 
 using namespace std;
 
+const double EPS = 1e-9;
+
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
@@ -24,7 +26,7 @@ int main() {
 		sort(C.begin(), C.end());
 		double ans{};
 		for (int i = 1; i < C.size(); ++i) {
-			ans = max(ans, C[i] / C[i - 1]);
+			ans = max(ans, C[i] / C[i - 1] + EPS);
 		}
 		cout << fixed << setprecision(2);
 		cout << ans << "\n";
