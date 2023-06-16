@@ -18,18 +18,18 @@ int main() {
 	}
 	int M{};
 	cin >> M;
-	vector<ll> C(M);
-	vector<ll> D(M);
+	vector<int> C(M);
+	vector<int> D(M);
 	for (int i = 0; i < M; ++i) {
 		cin >> C[i] >> D[i];
 	}
 	int lo = 1, hi = 1e9;
 	while (lo + 1 < hi) {
 		int mid = (lo + hi) / 2;
-		ll sum{};
+		ll sum = 1;
 		for (int i = 0; i < N; ++i) {
-			if (mid >= A[i]) {
-				sum += (mid - A[i]) / B[i] + 1;
+			if (mid > A[i]) {
+				sum += (mid - A[i] - 1) / B[i] + 1;
 			}
 		}
 		for (int i = 0; i < M; ++i) {
