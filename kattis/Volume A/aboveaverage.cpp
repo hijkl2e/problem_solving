@@ -24,7 +24,7 @@ int main() {
 				++cnt;
 			}
 		}
-		double ans = cnt * 100.0 / N;
+		double ans = cnt * 100.0 / N + EPS;
 		cout << fixed << setprecision(3);
 		cout << ans << "%\n";
 	}
