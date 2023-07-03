@@ -32,10 +32,12 @@ int main() {
 	cin.tie(nullptr);
 	int L{}, G{};
 	cin >> L >> G;
+	G = min(G, L);
 	C.resize(L + 1);
 	for (int i = 1; i <= L; ++i) {
 		cin >> C[i];
 	}
+	partial_sum(C.begin(), C.end(), C.begin());
 	dp.assign(2, vector<ll>(L + 1, INF));
 	dp[0][0] = 0;
 	for (int i = 1; i <= G; ++i) {

@@ -21,39 +21,32 @@ int main() {
 	cin.tie(nullptr);
 	int N{};
 	cin >> N;
-	vector<ll> D(N);
+	vector<int> A(N);
+	vector<int> B(N);
 	for (int i = 0; i < N; ++i) {
-		cin >> D[i];
+		cin >> A[i];
 	}
-	vector<ll> P(N);
-	vector<ll> S(N);
 	for (int i = 0; i < N; ++i) {
-		cin >> P[i] >> S[i];
+		cin >> B[i];
 	}
-	vector<line> A;
-	A.push_back({0, 0, -INF});
+	vector<line> C;
+	C.push_back({0, 0, -INF});
 	ll ans{};
-	for (int i = 0; i < N; ++i) {
-		int lo = 0, hi = A.size();
-		while (lo + 1 < hi) {
-			int mid = (lo + hi) / 2;
-			if (A[mid].c - EPS < S[i]) {
-				lo = mid;
-			} else {
-				hi = mid;
-			}
+	for (int i = 0, j = 0; i < N; ++i) {
+		while (j + 1 < C.size() && C[j + 1].c - EPS < A[i]) {
+			++j;
 		}
-		ans = A[lo].a * S[i] + A[lo].b + D[i] * S[i] + P[i];
-		line L{-D[i], ans, -INF};
-		while (A.size()) {
-			L.c = get_x(L, A.back());
-			if (L.c < A.back().c - EPS) {
-				A.pop_back();
+		ans = C[j].a * A[i] + C[j].b;
+		line L{B[i], ans, -INF};
+		while (C.size()) {
+			L.c = get_x(L, C.back());
+			if (L.c < C.back().c - EPS) {
+				C.pop_back();
 			} else {
 				break;
 			}
 		}
-		A.push_back(L);
+		C.push_back(L);
 	}
 	cout << ans << "\n";
 	return 0;
