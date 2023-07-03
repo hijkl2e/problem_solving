@@ -3,7 +3,6 @@
 using namespace std;
 
 int A[5001];
-int psum[5001];
 int dp[5001][5002];
 int opt[5001][5002];
 
@@ -21,7 +20,7 @@ int main() {
 		for (int i = 1; i <= N; ++i) {
 			cin >> A[i];
 		}
-		partial_sum(begin(A), end(A), begin(psum));
+		partial_sum(begin(A), end(A), begin(A));
 		memset(dp, 0x3f, sizeof dp);
 		for (int i = 1; i <= N; ++i) {
 			dp[i][i + 1] = 0;
@@ -35,7 +34,7 @@ int main() {
 						opt[i][j] = k;
 					}
 				}
-				dp[i][j] += psum[j - 1] - psum[i - 1];
+				dp[i][j] += A[j - 1] - A[i - 1];
 			}
 		}
 		cout << dp[1][N + 1] << "\n";
