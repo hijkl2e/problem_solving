@@ -6,8 +6,17 @@ vector<int> solve(deque<int> &A) {
 	int N = A.size();
 	deque<int> B;
 	vector<int> C;
-	for (int i = 0, p = 1; i < 11; ++i, p *= 3) {
+	for (int i = 0, p = 1;; ++i, p *= 3) {
 		int k = i % 2;
+		if (p >= N) {
+			if (k) {
+				reverse(A.begin(), A.end());
+				for (int i = 0; i < N; ++i) {
+					C.push_back(1);
+				}
+			}
+			break;
+		}
 		for (int j = 0; j < N; ++j) {
 			int x = A.front();
 			A.pop_front();
@@ -30,10 +39,6 @@ vector<int> solve(deque<int> &A) {
 			C.push_back(k);
 		}
 		swap(A, B);
-	}
-	reverse(A.begin(), A.end());
-	for (int i = 0; i < N; ++i) {
-		C.push_back(1);
 	}
 	return C;
 }
