@@ -28,11 +28,11 @@ int main() {
 							if (x + y <= i + j && i + j <= x + y + 2 * d2
 									&& x - y <= i - j && i - j <= x - y + 2 * d1) {
 								z = 4;
-							} else if (i < x + d1 && j <= y) {
+							} else if (i < x + d1 && j <= y && i + j < x + y) {
 								z = 0;
-							} else if (i <= x + d2 && j > y) {
+							} else if (i <= x + d2 && j > y && i - j < x - y) {
 								z = 1;
-							} else if (i >= x + d1 && j < y - d1 + d2) {
+							} else if (i >= x + d1 && j < y - d1 + d2 && i - j > x - y + 2 * d1) {
 								z = 2;
 							} else {
 								z = 3;
