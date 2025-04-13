@@ -11,13 +11,14 @@ int main() {
 	while (N--) {
 		int v{}, c{}, k{};
 		cin >> v >> c >> k;
-		for (int i = 1; k >= 2 * i - 1; i *= 2) {
+		for (int i = 1; k >= i; i *= 2) {
 			A.push_back(i * v);
 			B.push_back(i * c);
-			if ((k - (2 * i - 1)) % (2 * i) >= i) {
-				A.push_back(i * v);
-				B.push_back(i * c);
-			}
+			k -= i;
+		}
+		if (k) {
+			A.push_back(k * v);
+			B.push_back(k * c);
 		}
 	}
 	vector<int> dp(M + 1);
